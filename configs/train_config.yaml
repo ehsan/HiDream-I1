@@ -1,0 +1,21 @@
+seed: 42
+wandb_project: hidream_training
+train:
+  batch_size: 8
+  lr: 1e-4
+  max_steps: 100
+  warmup_steps: 10
+  precision: 32
+  gradient_clip_val: 1.0
+  log_every_n_steps: 10
+  num_workers: 2
+  accelerator: auto
+  devices: 1
+  strategy: null
+  resume_from_checkpoint: null
+
+data:
+  train_samples: 100
+  val_samples: 20
+  test_samples: 20
+  image_size: 64
