@@ -101,6 +101,21 @@ image = pipe(
 image.save("output.png")
 ```
 
+## Training
+To reproduce our training process, we provide a simple PyTorch Lightning script. Install the extra dependencies and launch training with `torchrun`:
+
+```bash
+pip install -r requirements.txt
+torchrun --standalone --nproc_per_node=1 train.py --config configs/train_config.yaml
+# or use accelerate
+accelerate launch train.py --config configs/train_config.yaml
+
+The config file defines train/val/test splits and supports resuming from a checkpoint. A warmup scheduler is enabled through the `warmup_steps` parameter. Set `resume_from_checkpoint` to a checkpoint path to finetune an existing model.
+```
+
+The paper describes a multi-stage strategy. Latents from images resized to 256×256 are trained for 600k steps with batch size 24 per GPU, then 512×512 for 200k steps with batch size 8 per GPU, and finally 1024×1024 for 200k steps with batch size 2 per GPU. AdamW with learning rate 0.0001 and 1k warmup, FSDP, mixed precision and gradient checkpointing are used. A post-training stage further fine-tunes for 20k steps with learning rate 1e-5 and global batch size 64.
+
+
 ## Evaluation Metrics
 
 ### DPG-Bench
